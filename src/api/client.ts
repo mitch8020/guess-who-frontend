@@ -1,6 +1,7 @@
 import { sessionStore } from '@/stores/sessionStore'
 import type { ApiError } from '@/types/api'
 import type { User } from '@/types/domain'
+import { rollbar } from '@/utils/rollbar'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001/api'
 
@@ -106,12 +107,18 @@ export const apiRequest = async <T>(path: string, options?: RequestOptions): Pro
 
   if (!response.ok) {
     const errorPayload = await parseResponse<ApiError>(response).catch(() => undefined)
-    throw new ApiClientError(
+    const error = new ApiClientError(
       response.status,
       errorPayload?.error.code ?? 'REQUEST_FAILED',
       errorPayload?.error.message ?? `Request failed with status ${response.status}`,
       errorPayload?.error.details,
     )
+    rollbar?.error(error, {
+      path,
+      status: response.status,
+      code: error.code,
+    })
+    throw error
   }
 
   return parseResponse<T>(response)

@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { chatApi } from '@/api/chat'
 import { matchesApi } from '@/api/matches'
 import { queryClient } from '@/api/queryClient'
 import { useRealtimeRoom } from '@/hooks/useRealtime'
@@ -14,11 +15,25 @@ function MatchBoardPage() {
   const { roomId, matchId } = Route.useParams()
   const navigate = useNavigate()
   const [imageIdInput, setImageIdInput] = useState('')
+  const [chatMessage, setChatMessage] = useState('')
   useRealtimeRoom(roomId, matchId)
 
   const matchQuery = useQuery({
     queryKey: ['match', roomId, matchId],
     queryFn: () => matchesApi.detail(roomId, matchId),
+  })
+
+  const chatQuery = useQuery({
+    queryKey: ['chat', roomId],
+    queryFn: () => chatApi.list(roomId),
+  })
+
+  const sendChatMutation = useMutation({
+    mutationFn: () => chatApi.send(roomId, chatMessage),
+    onSuccess: async () => {
+      setChatMessage('')
+      await queryClient.invalidateQueries({ queryKey: ['chat', roomId] })
+    },
   })
 
   const actionMutation = useMutation({
@@ -53,6 +68,14 @@ function MatchBoardPage() {
     setImageIdInput('')
   }
 
+  const onSendChat = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!chatMessage.trim()) {
+      return
+    }
+    sendChatMutation.mutate()
+  }
+
   const submitGuess = () => {
     if (!imageIdInput.trim()) {
       return
@@ -68,7 +91,7 @@ function MatchBoardPage() {
     <div className="panel">
       <h1 className="page-title text-3xl">Match Board</h1>
       <p className="subtle mt-2">
-        Match {matchId} Â· status: {match?.status ?? 'loading'} Â· turn member: {match?.turnMemberId ?? 'n/a'}
+        Match {matchId} · status: {match?.status ?? 'loading'} · turn member: {match?.turnMemberId ?? 'n/a'}
       </p>
 
       {matchQuery.data?.participantState ? (
@@ -125,6 +148,24 @@ function MatchBoardPage() {
       </section>
 
       <section className="card mt-4">
+        <h2 className="text-lg font-semibold">Room Chat</h2>
+        <div className="card-list">
+          {chatQuery.data?.items.map((item) => (
+            <div key={item._id} className="card">
+              <p className="text-sm">{item.message}</p>
+              <p className="subtle text-xs">{item.memberId} · {new Date(item.createdAt).toLocaleTimeString()}</p>
+            </div>
+          ))}
+        </div>
+        <form className="field mt-3" onSubmit={onSendChat}>
+          <input value={chatMessage} onChange={(event) => setChatMessage(event.target.value)} placeholder="Send message" />
+          <button className="btn btn-secondary" type="submit" disabled={sendChatMutation.isPending}>
+            Send
+          </button>
+        </form>
+      </section>
+
+      <section className="card mt-4">
         <h2 className="text-lg font-semibold">Action Timeline</h2>
         <div className="card-list">
           {matchQuery.data?.actions.map((action) => (
@@ -150,6 +191,9 @@ function MatchBoardPage() {
           >
             View Summary
           </button>
+          <Link className="btn btn-secondary" to="/rooms/$roomId/matches/$matchId/replay" params={{ roomId, matchId }}>
+            Replay
+          </Link>
           <Link className="btn btn-secondary" to="/rooms/$roomId/lobby" params={{ roomId }}>
             Back to Lobby
           </Link>

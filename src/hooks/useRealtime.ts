@@ -25,15 +25,23 @@ export const useRealtimeRoom = (roomId: string, matchId?: string) => {
     const roomRefresh = () => {
       void queryClient.invalidateQueries({ queryKey: ['room', roomId] })
       void queryClient.invalidateQueries({ queryKey: ['images', roomId] })
+      void queryClient.invalidateQueries({ queryKey: ['history', roomId] })
+      void queryClient.invalidateQueries({ queryKey: ['chat', roomId] })
     }
     const matchRefresh = () => {
       if (matchId) {
         void queryClient.invalidateQueries({ queryKey: ['match', roomId, matchId] })
+        void queryClient.invalidateQueries({ queryKey: ['replay', roomId, matchId] })
       }
     }
 
     socket.on('presence.updated', roomRefresh)
     socket.on('match.started', roomRefresh)
+    socket.on('chat.message.created', roomRefresh)
+    socket.on('member.muted', roomRefresh)
+    socket.on('member.unmuted', roomRefresh)
+    socket.on('images.bulk_removed', roomRefresh)
+    socket.on('history.updated', roomRefresh)
     socket.on('action.applied', matchRefresh)
     socket.on('turn.changed', matchRefresh)
     socket.on('match.completed', matchRefresh)

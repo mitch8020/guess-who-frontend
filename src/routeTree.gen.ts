@@ -16,8 +16,10 @@ import { Route as JoinCodeRouteImport } from './routes/join/$code'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as RoomsRoomIdLobbyRouteImport } from './routes/rooms/$roomId/lobby'
 import { Route as RoomsRoomIdImagesRouteImport } from './routes/rooms/$roomId/images'
+import { Route as RoomsRoomIdHistoryRouteImport } from './routes/rooms/$roomId/history'
 import { Route as RoomsRoomIdMatchesMatchIdRouteImport } from './routes/rooms/$roomId/matches/$matchId'
 import { Route as RoomsRoomIdMatchesMatchIdSummaryRouteImport } from './routes/rooms/$roomId/matches/$matchId/summary'
+import { Route as RoomsRoomIdMatchesMatchIdReplayRouteImport } from './routes/rooms/$roomId/matches/$matchId/replay'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +56,11 @@ const RoomsRoomIdImagesRoute = RoomsRoomIdImagesRouteImport.update({
   path: '/rooms/$roomId/images',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoomsRoomIdHistoryRoute = RoomsRoomIdHistoryRouteImport.update({
+  id: '/rooms/$roomId/history',
+  path: '/rooms/$roomId/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoomsRoomIdMatchesMatchIdRoute =
   RoomsRoomIdMatchesMatchIdRouteImport.update({
     id: '/rooms/$roomId/matches/$matchId',
@@ -66,6 +73,12 @@ const RoomsRoomIdMatchesMatchIdSummaryRoute =
     path: '/summary',
     getParentRoute: () => RoomsRoomIdMatchesMatchIdRoute,
   } as any)
+const RoomsRoomIdMatchesMatchIdReplayRoute =
+  RoomsRoomIdMatchesMatchIdReplayRouteImport.update({
+    id: '/replay',
+    path: '/replay',
+    getParentRoute: () => RoomsRoomIdMatchesMatchIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -73,9 +86,11 @@ export interface FileRoutesByFullPath {
   '/join/$code': typeof JoinCodeRoute
   '/rooms/new': typeof RoomsNewRoute
   '/rooms/': typeof RoomsIndexRoute
+  '/rooms/$roomId/history': typeof RoomsRoomIdHistoryRoute
   '/rooms/$roomId/images': typeof RoomsRoomIdImagesRoute
   '/rooms/$roomId/lobby': typeof RoomsRoomIdLobbyRoute
   '/rooms/$roomId/matches/$matchId': typeof RoomsRoomIdMatchesMatchIdRouteWithChildren
+  '/rooms/$roomId/matches/$matchId/replay': typeof RoomsRoomIdMatchesMatchIdReplayRoute
   '/rooms/$roomId/matches/$matchId/summary': typeof RoomsRoomIdMatchesMatchIdSummaryRoute
 }
 export interface FileRoutesByTo {
@@ -84,9 +99,11 @@ export interface FileRoutesByTo {
   '/join/$code': typeof JoinCodeRoute
   '/rooms/new': typeof RoomsNewRoute
   '/rooms': typeof RoomsIndexRoute
+  '/rooms/$roomId/history': typeof RoomsRoomIdHistoryRoute
   '/rooms/$roomId/images': typeof RoomsRoomIdImagesRoute
   '/rooms/$roomId/lobby': typeof RoomsRoomIdLobbyRoute
   '/rooms/$roomId/matches/$matchId': typeof RoomsRoomIdMatchesMatchIdRouteWithChildren
+  '/rooms/$roomId/matches/$matchId/replay': typeof RoomsRoomIdMatchesMatchIdReplayRoute
   '/rooms/$roomId/matches/$matchId/summary': typeof RoomsRoomIdMatchesMatchIdSummaryRoute
 }
 export interface FileRoutesById {
@@ -96,9 +113,11 @@ export interface FileRoutesById {
   '/join/$code': typeof JoinCodeRoute
   '/rooms/new': typeof RoomsNewRoute
   '/rooms/': typeof RoomsIndexRoute
+  '/rooms/$roomId/history': typeof RoomsRoomIdHistoryRoute
   '/rooms/$roomId/images': typeof RoomsRoomIdImagesRoute
   '/rooms/$roomId/lobby': typeof RoomsRoomIdLobbyRoute
   '/rooms/$roomId/matches/$matchId': typeof RoomsRoomIdMatchesMatchIdRouteWithChildren
+  '/rooms/$roomId/matches/$matchId/replay': typeof RoomsRoomIdMatchesMatchIdReplayRoute
   '/rooms/$roomId/matches/$matchId/summary': typeof RoomsRoomIdMatchesMatchIdSummaryRoute
 }
 export interface FileRouteTypes {
@@ -109,9 +128,11 @@ export interface FileRouteTypes {
     | '/join/$code'
     | '/rooms/new'
     | '/rooms/'
+    | '/rooms/$roomId/history'
     | '/rooms/$roomId/images'
     | '/rooms/$roomId/lobby'
     | '/rooms/$roomId/matches/$matchId'
+    | '/rooms/$roomId/matches/$matchId/replay'
     | '/rooms/$roomId/matches/$matchId/summary'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -120,9 +141,11 @@ export interface FileRouteTypes {
     | '/join/$code'
     | '/rooms/new'
     | '/rooms'
+    | '/rooms/$roomId/history'
     | '/rooms/$roomId/images'
     | '/rooms/$roomId/lobby'
     | '/rooms/$roomId/matches/$matchId'
+    | '/rooms/$roomId/matches/$matchId/replay'
     | '/rooms/$roomId/matches/$matchId/summary'
   id:
     | '__root__'
@@ -131,9 +154,11 @@ export interface FileRouteTypes {
     | '/join/$code'
     | '/rooms/new'
     | '/rooms/'
+    | '/rooms/$roomId/history'
     | '/rooms/$roomId/images'
     | '/rooms/$roomId/lobby'
     | '/rooms/$roomId/matches/$matchId'
+    | '/rooms/$roomId/matches/$matchId/replay'
     | '/rooms/$roomId/matches/$matchId/summary'
   fileRoutesById: FileRoutesById
 }
@@ -143,6 +168,7 @@ export interface RootRouteChildren {
   JoinCodeRoute: typeof JoinCodeRoute
   RoomsNewRoute: typeof RoomsNewRoute
   RoomsIndexRoute: typeof RoomsIndexRoute
+  RoomsRoomIdHistoryRoute: typeof RoomsRoomIdHistoryRoute
   RoomsRoomIdImagesRoute: typeof RoomsRoomIdImagesRoute
   RoomsRoomIdLobbyRoute: typeof RoomsRoomIdLobbyRoute
   RoomsRoomIdMatchesMatchIdRoute: typeof RoomsRoomIdMatchesMatchIdRouteWithChildren
@@ -199,6 +225,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoomsRoomIdImagesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rooms/$roomId/history': {
+      id: '/rooms/$roomId/history'
+      path: '/rooms/$roomId/history'
+      fullPath: '/rooms/$roomId/history'
+      preLoaderRoute: typeof RoomsRoomIdHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rooms/$roomId/matches/$matchId': {
       id: '/rooms/$roomId/matches/$matchId'
       path: '/rooms/$roomId/matches/$matchId'
@@ -213,15 +246,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoomsRoomIdMatchesMatchIdSummaryRouteImport
       parentRoute: typeof RoomsRoomIdMatchesMatchIdRoute
     }
+    '/rooms/$roomId/matches/$matchId/replay': {
+      id: '/rooms/$roomId/matches/$matchId/replay'
+      path: '/replay'
+      fullPath: '/rooms/$roomId/matches/$matchId/replay'
+      preLoaderRoute: typeof RoomsRoomIdMatchesMatchIdReplayRouteImport
+      parentRoute: typeof RoomsRoomIdMatchesMatchIdRoute
+    }
   }
 }
 
 interface RoomsRoomIdMatchesMatchIdRouteChildren {
+  RoomsRoomIdMatchesMatchIdReplayRoute: typeof RoomsRoomIdMatchesMatchIdReplayRoute
   RoomsRoomIdMatchesMatchIdSummaryRoute: typeof RoomsRoomIdMatchesMatchIdSummaryRoute
 }
 
 const RoomsRoomIdMatchesMatchIdRouteChildren: RoomsRoomIdMatchesMatchIdRouteChildren =
   {
+    RoomsRoomIdMatchesMatchIdReplayRoute: RoomsRoomIdMatchesMatchIdReplayRoute,
     RoomsRoomIdMatchesMatchIdSummaryRoute:
       RoomsRoomIdMatchesMatchIdSummaryRoute,
   }
@@ -237,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   JoinCodeRoute: JoinCodeRoute,
   RoomsNewRoute: RoomsNewRoute,
   RoomsIndexRoute: RoomsIndexRoute,
+  RoomsRoomIdHistoryRoute: RoomsRoomIdHistoryRoute,
   RoomsRoomIdImagesRoute: RoomsRoomIdImagesRoute,
   RoomsRoomIdLobbyRoute: RoomsRoomIdLobbyRoute,
   RoomsRoomIdMatchesMatchIdRoute: RoomsRoomIdMatchesMatchIdRouteWithChildren,

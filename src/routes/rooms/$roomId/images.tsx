@@ -13,6 +13,7 @@ export const Route = createFileRoute('/rooms/$roomId/images')({
 function RoomImagesPage() {
   const { roomId } = Route.useParams()
   const [error, setError] = useState<string | null>(null)
+  const [selected, setSelected] = useState<string[]>([])
   useRealtimeRoom(roomId)
 
   const imagesQuery = useQuery({
@@ -38,6 +39,14 @@ function RoomImagesPage() {
     },
   })
 
+  const bulkRemoveMutation = useMutation({
+    mutationFn: () => imagesApi.bulkRemove(roomId, selected),
+    onSuccess: async () => {
+      setSelected([])
+      await queryClient.invalidateQueries({ queryKey: ['images', roomId] })
+    },
+  })
+
   const onFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) {
@@ -51,28 +60,42 @@ function RoomImagesPage() {
     <div className="panel">
       <h1 className="page-title text-3xl">Room Image Library</h1>
       <p className="subtle mt-2">
-        Active images: {imagesQuery.data?.activeCount ?? 0} Â· minimum to start: {imagesQuery.data?.minRequiredToStart ?? 16}
+        Active images: {imagesQuery.data?.activeCount ?? 0} · minimum to start: {imagesQuery.data?.minRequiredToStart ?? 16}
       </p>
       <label className="field mt-4">
         Upload JPEG/PNG/WebP (max 10MB)
         <input type="file" accept="image/jpeg,image/png,image/webp" onChange={onFileSelected} />
       </label>
       {error ? <p className="danger-text mt-2">{error}</p> : null}
+      {selected.length > 0 ? (
+        <button type="button" className="btn btn-danger mt-3" onClick={() => bulkRemoveMutation.mutate()}>
+          Bulk Remove ({selected.length})
+        </button>
+      ) : null}
 
       <div className="card-list">
         {imagesQuery.data?.images.map((image) => (
-          <article key={image._id} className="card flex items-center justify-between">
-            <div>
-              <h2 className="text-sm font-semibold">{image.filename}</h2>
-              <p className="subtle text-xs">
-                {image.mimeType} Â· {Math.round(image.fileSizeBytes / 1024)} KB
-              </p>
+          <article key={image._id} className="card flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={selected.includes(image._id)}
+                onChange={(event) =>
+                  setSelected((current) =>
+                    event.target.checked
+                      ? [...current, image._id]
+                      : current.filter((id) => id !== image._id),
+                  )
+                }
+              />
+              <div>
+                <h2 className="text-sm font-semibold">{image.filename}</h2>
+                <p className="subtle text-xs">
+                  {image.mimeType} · {Math.round(image.fileSizeBytes / 1024)} KB
+                </p>
+              </div>
             </div>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => deleteMutation.mutate(image._id)}
-            >
+            <button type="button" className="btn btn-danger" onClick={() => deleteMutation.mutate(image._id)}>
               Remove
             </button>
           </article>

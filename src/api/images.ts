@@ -27,4 +27,11 @@ export const imagesApi = {
       auth: 'player',
       roomId,
     }),
+  bulkRemove: (roomId: string, imageIds: string[]) =>
+    apiRequest<{ removedImageIds: string[] }>(`/rooms/${roomId}/images/bulk-remove`, {
+      method: 'POST',
+      body: JSON.stringify({ imageIds }),
+      auth: 'player',
+      roomId,
+    }),
 }

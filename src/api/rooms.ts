@@ -8,6 +8,8 @@ export interface CreateRoomPayload {
     allowedBoardSizes?: number[]
     maxPlayers?: number
     allowGuestJoin?: boolean
+    defaultBoardSize?: number
+    rematchBoardSizes?: number[]
   }
 }
 
@@ -17,6 +19,8 @@ export interface UpdateRoomPayload {
     allowedBoardSizes?: number[]
     maxPlayers?: number
     allowGuestJoin?: boolean
+    defaultBoardSize?: number
+    rematchBoardSizes?: number[]
   }
 }
 
@@ -55,6 +59,17 @@ export const roomsApi = {
     apiRequest<{ members: RoomMember[] }>(`/rooms/${roomId}/members/remove`, {
       method: 'POST',
       body: JSON.stringify({ memberId }),
+      auth: 'user',
+    }),
+  muteMember: (roomId: string, memberId: string, durationMinutes = 30) =>
+    apiRequest<{ member: RoomMember }>(`/rooms/${roomId}/members/${memberId}/mute`, {
+      method: 'POST',
+      body: JSON.stringify({ durationMinutes }),
+      auth: 'user',
+    }),
+  unmuteMember: (roomId: string, memberId: string) =>
+    apiRequest<{ member: RoomMember }>(`/rooms/${roomId}/members/${memberId}/unmute`, {
+      method: 'POST',
       auth: 'user',
     }),
 }

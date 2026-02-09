@@ -33,15 +33,21 @@ declare module '@tanstack/react-router' {
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
+  const app = (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  )
+
   root.render(
     <StrictMode>
-      <RollbarProvider instance={rollbar}>
-        <ErrorBoundary>
-          <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />
-          </QueryClientProvider>
-        </ErrorBoundary>
-      </RollbarProvider>
+      {rollbar ? (
+        <RollbarProvider instance={rollbar}>
+          <ErrorBoundary>{app}</ErrorBoundary>
+        </RollbarProvider>
+      ) : (
+        app
+      )}
     </StrictMode>,
   )
 }

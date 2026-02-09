@@ -1,10 +1,26 @@
 import { apiRequest } from '@/api/client'
-import type { Match, MatchAction, MatchParticipantView } from '@/types/domain'
+import type {
+  Match,
+  MatchAction,
+  MatchHistoryItem,
+  MatchParticipantView,
+  MatchReplayFrame,
+} from '@/types/domain'
 
 export interface MatchDetailResponse {
   match: Match
   participantState: MatchParticipantView | null
   actions: MatchAction[]
+}
+
+export interface MatchHistoryResponse {
+  items: MatchHistoryItem[]
+  nextCursor: string | null
+}
+
+export interface MatchReplayResponse {
+  matchId: string
+  frames: MatchReplayFrame[]
 }
 
 export const matchesApi = {
@@ -17,6 +33,19 @@ export const matchesApi = {
     }),
   detail: (roomId: string, matchId: string) =>
     apiRequest<MatchDetailResponse>(`/rooms/${roomId}/matches/${matchId}`, {
+      auth: 'player',
+      roomId,
+    }),
+  history: (roomId: string, cursor?: string, limit = 20) =>
+    apiRequest<MatchHistoryResponse>(
+      `/rooms/${roomId}/matches/history?limit=${limit}${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}`,
+      {
+        auth: 'player',
+        roomId,
+      },
+    ),
+  replay: (roomId: string, matchId: string) =>
+    apiRequest<MatchReplayResponse>(`/rooms/${roomId}/matches/${matchId}/replay`, {
       auth: 'player',
       roomId,
     }),

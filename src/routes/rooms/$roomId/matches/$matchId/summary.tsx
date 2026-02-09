@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { matchesApi } from '@/api/matches'
 import { queryClient } from '@/api/queryClient'
@@ -9,6 +9,7 @@ export const Route = createFileRoute('/rooms/$roomId/matches/$matchId/summary')(
 
 function MatchSummaryPage() {
   const { roomId, matchId } = Route.useParams()
+  const navigate = useNavigate()
 
   const matchQuery = useQuery({
     queryKey: ['match', roomId, matchId],
@@ -19,7 +20,10 @@ function MatchSummaryPage() {
     mutationFn: () => matchesApi.rematch(roomId, matchId),
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: ['match', roomId, result.match._id] })
-      window.location.href = `/rooms/${roomId}/matches/${result.match._id}`
+      await navigate({
+        to: '/rooms/$roomId/matches/$matchId',
+        params: { roomId, matchId: result.match._id },
+      })
     },
   })
 
@@ -46,6 +50,12 @@ function MatchSummaryPage() {
         <button className="btn btn-primary" type="button" onClick={() => rematchMutation.mutate()}>
           Start Rematch
         </button>
+        <Link to="/rooms/$roomId/matches/$matchId/replay" params={{ roomId, matchId }} className="btn btn-secondary">
+          Replay
+        </Link>
+        <Link to="/rooms/$roomId/history" params={{ roomId }} className="btn btn-secondary">
+          History
+        </Link>
         <Link to="/rooms/$roomId/lobby" params={{ roomId }} className="btn btn-secondary">
           Back to Lobby
         </Link>
