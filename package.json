@@ -12,6 +12,8 @@
     "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {
+    "@rollbar/react": "^0.12.0",
+    "@tanstack/react-query": "^5.90.5",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-router": "^1.132.0",
@@ -20,6 +22,8 @@
     "lucide-react": "^0.545.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "rollbar": "^2.26.5",
+    "socket.io-client": "^4.8.1",
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {

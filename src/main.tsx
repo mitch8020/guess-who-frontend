@@ -1,9 +1,13 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { ErrorBoundary, Provider as RollbarProvider } from '@rollbar/react'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
+import { queryClient } from './api/queryClient'
+import { rollbar } from './utils/rollbar'
 
 import './styles.css'
 import reportWebVitals from './reportWebVitals.ts'
@@ -31,7 +35,13 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <RollbarProvider instance={rollbar}>
+        <ErrorBoundary>
+          <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+          </QueryClientProvider>
+        </ErrorBoundary>
+      </RollbarProvider>
     </StrictMode>,
   )
 }

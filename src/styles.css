@@ -1,15 +1,163 @@
 @import "tailwindcss";
 
+:root {
+  --bg-ink: #0c1719;
+  --bg-surface: #11262b;
+  --bg-panel: rgba(11, 34, 41, 0.8);
+  --text-main: #f4f7f7;
+  --text-muted: #b6c8c7;
+  --accent: #ff7a34;
+  --accent-alt: #7ce2d6;
+  --danger: #ff5f5f;
+  --ring: rgba(124, 226, 214, 0.45);
+}
+
 body {
-  @apply m-0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  @apply m-0 min-h-screen;
+  font-family: "Sora", "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 122, 52, 0.25), transparent 32%),
+    radial-gradient(circle at 83% 11%, rgba(124, 226, 214, 0.2), transparent 35%),
+    linear-gradient(135deg, #081315 0%, #0f262a 45%, #142f34 100%);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.app-shell {
+  @apply mx-auto w-full max-w-6xl px-4 pb-12 md:px-8;
+}
+
+.site-header {
+  @apply sticky top-0 z-20 mt-4 flex items-center justify-between rounded-2xl border border-white/10 px-4 py-3 backdrop-blur-sm md:px-6;
+  background: linear-gradient(
+    120deg,
+    rgba(10, 28, 34, 0.86) 0%,
+    rgba(15, 45, 56, 0.86) 45%,
+    rgba(34, 62, 58, 0.75) 100%
+  );
+}
+
+.brand {
+  @apply flex items-center gap-3 text-base font-semibold tracking-wide md:text-lg;
+}
+
+.brand-token {
+  @apply inline-flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold;
+  background: linear-gradient(135deg, var(--accent) 0%, #ffb347 100%);
+  color: #211003;
+}
+
+.header-links {
+  @apply flex items-center gap-2;
+}
+
+.header-link {
+  @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors;
+  color: var(--text-muted);
+}
+
+.header-link:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ghost-button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.page-title {
+  @apply mt-8 text-3xl font-semibold tracking-tight md:text-5xl;
+}
+
+.subtle {
+  color: var(--text-muted);
+}
+
+.panel {
+  @apply mt-5 rounded-2xl border border-white/10 p-5 shadow-xl md:p-7;
+  background: var(--bg-panel);
+}
+
+.grid-two {
+  @apply grid gap-4 md:grid-cols-2;
+}
+
+.field {
+  @apply mt-3 flex flex-col gap-2;
+}
+
+.field input,
+.field select,
+.field textarea {
+  @apply rounded-xl border px-3 py-2 text-sm outline-none transition-shadow;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(6, 21, 25, 0.75);
+  color: var(--text-main);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-transform;
+  border: 0;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-primary {
+  background: linear-gradient(140deg, var(--accent) 0%, #ffbb58 100%);
+  color: #1f1107;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(124, 226, 214, 0.17);
+  color: #e8fffb;
+}
+
+.btn-danger {
+  background: rgba(255, 95, 95, 0.2);
+  color: #ffe7e7;
+}
+
+.badge {
+  @apply inline-flex rounded-full px-2 py-1 text-xs font-semibold;
+  background: rgba(124, 226, 214, 0.2);
+  color: #d8fffa;
+}
+
+.card-list {
+  @apply mt-4 grid gap-3;
+}
+
+.card {
+  @apply rounded-xl border border-white/10 p-4;
+  background: rgba(12, 31, 38, 0.76);
+}
+
+.danger-text {
+  color: var(--danger);
 }
