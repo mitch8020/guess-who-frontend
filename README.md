@@ -39,11 +39,12 @@ Shared layers:
 npm install
 ```
 
-2. Create `.env` in this directory:
+2. Create `.env.dev` in this directory:
 
 ```env
-VITE_API_BASE_URL=http://localhost:3001/api
-VITE_WS_BASE_URL=ws://localhost:3001/ws
+PORT=1073
+VITE_API_BASE_URL=http://localhost:1000/api
+VITE_WS_BASE_URL=ws://localhost:1000/ws
 VITE_ROLLBAR_CLIENT_TOKEN=your_rollbar_browser_token
 VITE_ROLLBAR_ENV=development
 ```
@@ -54,7 +55,7 @@ VITE_ROLLBAR_ENV=development
 npm run dev
 ```
 
-App runs at `http://localhost:3000` by default.
+App runs at `http://localhost:1073` by default.
 
 ## Primary Routes (Planned)
 
