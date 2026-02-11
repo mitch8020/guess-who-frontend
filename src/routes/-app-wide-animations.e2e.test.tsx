@@ -1,13 +1,14 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createMemoryHistory, createRouter } from '@tanstack/react-router'
 import * as realtimeHooks from '@/hooks/useRealtime'
 import { imagesApi } from '@/api/images'
 import { matchesApi } from '@/api/matches'
 import { chatApi } from '@/api/chat'
+import { invitesApi } from '@/api/invites'
 import { routeTree } from '@/routeTree.gen'
 import { sessionStore } from '@/stores/sessionStore'
 import { motionClassNames } from '@/utils/motion'
@@ -34,6 +35,7 @@ function renderAtPath(pathname: string) {
 }
 
 afterEach(() => {
+  cleanup()
   vi.restoreAllMocks()
   window.localStorage.clear()
   sessionStore.setState({
@@ -105,5 +107,42 @@ describe('app-wide motion route coverage', () => {
 
     const chatMessage = await screen.findByText('hello team')
     expect(chatMessage.closest('div')?.className).toContain(motionClassNames.listItemEntry)
+  })
+
+  it('navigates landing invite form to join route with normalized code', async () => {
+    vi.spyOn(realtimeHooks, 'useRealtimeRoom').mockImplementation(() => undefined)
+    vi.spyOn(invitesApi, 'resolve').mockResolvedValue({
+      invite: { _id: 'invite-1', code: 'AB12CD34', allowGuestJoin: true, usesCount: 0, maxUses: 0, expiresAt: undefined },
+      room: { _id: 'room-1', name: 'Room One', type: 'temporary' },
+    } as any)
+
+    renderAtPath('/')
+
+    fireEvent.change(await screen.findByPlaceholderText('Example: AB12CD34'), {
+      target: { value: '  ab12cd34  ' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Join Room' }))
+
+    expect(
+      await screen.findByRole('heading', { name: 'Join Room Invite' }),
+    ).toBeTruthy()
+    expect(await screen.findByText('Invite code: AB12CD34')).toBeTruthy()
+  })
+
+  it('renders signed-in landing branch on the public route', async () => {
+    vi.spyOn(realtimeHooks, 'useRealtimeRoom').mockImplementation(() => undefined)
+    sessionStore.setState({
+      accessToken: 'access-token',
+      user: {
+        _id: 'user-1',
+        email: 'user@example.com',
+        displayName: 'User',
+        status: 'active',
+      } as any,
+      guestTokensByRoomId: {},
+    })
+
+    renderAtPath('/')
+    expect(await screen.findByRole('button', { name: 'Open Rooms' })).toBeTruthy()
   })
 })

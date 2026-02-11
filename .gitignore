@@ -11,3 +11,5 @@ count.txt
 .env
 .env.dev
 .env.prod
+coverage
+.vscode
