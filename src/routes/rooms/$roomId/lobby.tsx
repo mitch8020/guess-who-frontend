@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+ï»¿import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -7,6 +7,7 @@ import { matchesApi } from '@/api/matches'
 import { roomsApi } from '@/api/rooms'
 import { queryClient } from '@/api/queryClient'
 import { useRealtimeRoom } from '@/hooks/useRealtime'
+import { getStaggerStyle, motionClassNames } from '@/utils/motion'
 
 export const Route = createFileRoute('/rooms/$roomId/lobby')({
   component: RoomLobbyPage,
@@ -91,13 +92,13 @@ function RoomLobbyPage() {
   }
 
   return (
-    <div className="panel">
-      <h1 className="page-title text-3xl">{roomQuery.data?.room.name ?? 'Room Lobby'}</h1>
-      <p className="subtle mt-2">
-        {roomQuery.data?.room.type ?? 'temporary'} room · {activeMembers.length} active players
+    <div className={`panel ${motionClassNames.sectionEntry}`}>
+      <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>{roomQuery.data?.room.name ?? 'Room Lobby'}</h1>
+      <p className={`subtle mt-2 ${motionClassNames.fadeIn}`} style={getStaggerStyle(1)}>
+        {roomQuery.data?.room.type ?? 'temporary'} room Â· {activeMembers.length} active players
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className={`mt-4 flex flex-wrap gap-2 ${motionClassNames.fadeIn}`} style={getStaggerStyle(2)}>
         <Link to="/rooms/$roomId/images" params={{ roomId }} className="btn btn-secondary">
           Manage Images
         </Link>
@@ -110,19 +111,23 @@ function RoomLobbyPage() {
       </div>
 
       {inviteCode ? (
-        <p className="mt-3">
-          Invite code: <strong>{inviteCode}</strong> · link:{' '}
+        <p className={`mt-3 ${motionClassNames.fadeIn}`} style={getStaggerStyle(3)}>
+          Invite code: <strong>{inviteCode}</strong> Â· link:{' '}
           <Link to="/join/$code" params={{ code: inviteCode }} className="underline">
             /join/{inviteCode}
           </Link>
         </p>
       ) : null}
 
-      <section className="card mt-5">
+      <section className={`card mt-5 ${motionClassNames.sectionEntry}`} style={getStaggerStyle(4)}>
         <h2 className="text-lg font-semibold">Players</h2>
         <div className="card-list">
-          {activeMembers.map((member) => (
-            <div key={member._id} className="card flex items-center justify-between">
+          {activeMembers.map((member, index) => (
+            <div
+              key={member._id}
+              className={`card flex items-center justify-between ${motionClassNames.listItemEntry}`}
+              style={getStaggerStyle(index, 30, 240)}
+            >
               <div>
                 <p>
                   {member.displayName} <span className="subtle">({member.role})</span>
@@ -144,7 +149,7 @@ function RoomLobbyPage() {
       </section>
 
       {isHost ? (
-        <section className="card mt-5">
+        <section className={`card mt-5 ${motionClassNames.sectionEntry}`} style={getStaggerStyle(5)}>
           <h2 className="text-lg font-semibold">Rematch Presets</h2>
           <div className="grid-two mt-3">
             <label className="field">
@@ -173,7 +178,7 @@ function RoomLobbyPage() {
         </section>
       ) : null}
 
-      <section className="card mt-5">
+      <section className={`card mt-5 ${motionClassNames.sectionEntry}`} style={getStaggerStyle(isHost ? 6 : 5)}>
         <h2 className="text-lg font-semibold">Start 1v1 Match</h2>
         <p className="subtle mt-1">Host starts a match with one opponent while room spectators can observe.</p>
         <form className="mt-3" onSubmit={onStartMatch}>

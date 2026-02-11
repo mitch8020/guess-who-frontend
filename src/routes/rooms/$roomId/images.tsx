@@ -1,10 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+ï»¿import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { imagesApi } from '@/api/images'
 import { queryClient } from '@/api/queryClient'
 import { useRealtimeRoom } from '@/hooks/useRealtime'
+import { getStaggerStyle, motionClassNames } from '@/utils/motion'
 
 export const Route = createFileRoute('/rooms/$roomId/images')({
   component: RoomImagesPage,
@@ -57,25 +58,34 @@ function RoomImagesPage() {
   }
 
   return (
-    <div className="panel">
-      <h1 className="page-title text-3xl">Room Image Library</h1>
-      <p className="subtle mt-2">
-        Active images: {imagesQuery.data?.activeCount ?? 0} · minimum to start: {imagesQuery.data?.minRequiredToStart ?? 16}
+    <div className={`panel ${motionClassNames.sectionEntry}`}>
+      <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>Room Image Library</h1>
+      <p className={`subtle mt-2 ${motionClassNames.fadeIn}`} style={getStaggerStyle(1)}>
+        Active images: {imagesQuery.data?.activeCount ?? 0} Â· minimum to start: {imagesQuery.data?.minRequiredToStart ?? 16}
       </p>
-      <label className="field mt-4">
+      <label className={`field mt-4 ${motionClassNames.sectionEntry}`} style={getStaggerStyle(2)}>
         Upload JPEG/PNG/WebP (max 10MB)
         <input type="file" accept="image/jpeg,image/png,image/webp" onChange={onFileSelected} />
       </label>
       {error ? <p className="danger-text mt-2">{error}</p> : null}
       {selected.length > 0 ? (
-        <button type="button" className="btn btn-danger mt-3" onClick={() => bulkRemoveMutation.mutate()}>
+        <button
+          type="button"
+          className={`btn btn-danger mt-3 ${motionClassNames.fadeIn}`}
+          style={getStaggerStyle(3)}
+          onClick={() => bulkRemoveMutation.mutate()}
+        >
           Bulk Remove ({selected.length})
         </button>
       ) : null}
 
       <div className="card-list">
-        {imagesQuery.data?.images.map((image) => (
-          <article key={image._id} className="card flex items-center justify-between gap-3">
+        {imagesQuery.data?.images.map((image, index) => (
+          <article
+            key={image._id}
+            className={`card flex items-center justify-between gap-3 ${motionClassNames.listItemEntry}`}
+            style={getStaggerStyle(index, 30, 260)}
+          >
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -91,7 +101,7 @@ function RoomImagesPage() {
               <div>
                 <h2 className="text-sm font-semibold">{image.filename}</h2>
                 <p className="subtle text-xs">
-                  {image.mimeType} · {Math.round(image.fileSizeBytes / 1024)} KB
+                  {image.mimeType} Â· {Math.round(image.fileSizeBytes / 1024)} KB
                 </p>
               </div>
             </div>
