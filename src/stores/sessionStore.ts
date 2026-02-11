@@ -6,8 +6,6 @@ export interface SessionState {
   guestTokensByRoomId: Record<string, string>
 }
 
-const STORAGE_KEY = 'guess-who-session-v1'
-
 const defaultState: SessionState = {
   accessToken: null,
   user: null,
@@ -15,41 +13,12 @@ const defaultState: SessionState = {
 }
 
 const subscribers = new Set<() => void>()
-
-const readInitialState = (): SessionState => {
-  if (typeof window === 'undefined') {
-    return defaultState
-  }
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) {
-      return defaultState
-    }
-    const parsed = JSON.parse(raw) as Partial<SessionState>
-    return {
-      ...defaultState,
-      ...parsed,
-      guestTokensByRoomId: parsed.guestTokensByRoomId ?? {},
-    }
-  } catch {
-    return defaultState
-  }
-}
-
-let state: SessionState = readInitialState()
+let state: SessionState = { ...defaultState }
 
 const emit = () => {
   for (const subscriber of subscribers) {
     subscriber()
   }
-}
-
-const persist = () => {
-  if (typeof window === 'undefined') {
-    return
-  }
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
 }
 
 export const sessionStore = {
@@ -60,7 +29,6 @@ export const sessionStore = {
   },
   setState: (nextState: SessionState) => {
     state = nextState
-    persist()
     emit()
   },
   setSession: (payload: {
@@ -72,7 +40,6 @@ export const sessionStore = {
       accessToken: payload.accessToken,
       user: payload.user,
     }
-    persist()
     emit()
   },
   clearUserSession: () => {
@@ -81,7 +48,6 @@ export const sessionStore = {
       accessToken: null,
       user: null,
     }
-    persist()
     emit()
   },
   setUser: (user: User | null) => {
@@ -89,7 +55,6 @@ export const sessionStore = {
       ...state,
       user,
     }
-    persist()
     emit()
   },
   setGuestToken: (roomId: string, token: string) => {
@@ -100,7 +65,6 @@ export const sessionStore = {
         [roomId]: token,
       },
     }
-    persist()
     emit()
   },
   getPlayerToken: (roomId?: string): string | null => {

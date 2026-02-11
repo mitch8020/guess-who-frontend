@@ -13,6 +13,14 @@ export const authApi = {
       accessToken: string
       user: User
     }>(`/auth/google/callback?${params.toString()}`, { auth: 'none' }),
+  refresh: () =>
+    apiRequest<{
+      accessToken: string
+      user: User
+    }>('/auth/refresh', {
+      method: 'POST',
+      auth: 'none',
+    }),
   me: () =>
     apiRequest<{ user: User }>('/auth/me', {
       auth: 'user',

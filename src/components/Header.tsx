@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { House, LogOut, PlusSquare, UsersRound } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { authApi } from '@/api/auth'
 import { sessionStore } from '@/stores/sessionStore'
 import { useSession } from '@/hooks/useSession'
@@ -8,14 +8,24 @@ import { shellMotionClassNames } from '@/utils/motion'
 
 export default function Header() {
   const session = useSession()
+  const attemptedRecovery = useRef(false)
 
   useEffect(() => {
-    if (!session.accessToken || session.user) {
+    if (session.user || attemptedRecovery.current) {
+      return
+    }
+    attemptedRecovery.current = true
+    if (session.accessToken) {
+      const accessToken = session.accessToken
+      void authApi
+        .me()
+        .then((payload) => sessionStore.setSession({ accessToken, user: payload.user }))
+        .catch(() => sessionStore.clearUserSession())
       return
     }
     void authApi
-      .me()
-      .then((payload) => sessionStore.setUser(payload.user))
+      .refresh()
+      .then((payload) => sessionStore.setSession(payload))
       .catch(() => sessionStore.clearUserSession())
   }, [session.accessToken, session.user])
 

@@ -15,22 +15,15 @@ function AuthCallbackPage() {
   useEffect(() => {
     const completeAuth = async () => {
       try {
-        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''))
-        const hashAccessToken = hashParams.get('accessToken')
-        if (hashAccessToken) {
-          sessionStore.setState({
-            ...sessionStore.getState(),
-            accessToken: hashAccessToken,
-            user: null,
-          })
-          const me = await authApi.me()
-          sessionStore.setUser(me.user)
-          await navigate({ to: '/rooms' })
-          return
-        }
-
         const params = new URLSearchParams(window.location.search)
-        const session = await authApi.finalizeGoogleCallback(params)
+        if (window.location.hash) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search)
+        }
+        const hasProviderCallbackParams =
+          params.has('code') || params.has('state') || params.has('error')
+        const session = hasProviderCallbackParams
+          ? await authApi.finalizeGoogleCallback(params)
+          : await authApi.refresh()
         sessionStore.setSession(session)
         await navigate({ to: '/rooms' })
       } catch (caughtError) {
