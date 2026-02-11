@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { invitesApi } from '@/api/invites'
 import { sessionStore } from '@/stores/sessionStore'
 import { useSession } from '@/hooks/useSession'
+import { getStaggerStyle, motionClassNames } from '@/utils/motion'
 
 export const Route = createFileRoute('/join/$code')({
   component: JoinInvitePage,
@@ -48,11 +49,13 @@ function JoinInvitePage() {
   }
 
   return (
-    <div className="panel">
-      <h1 className="page-title text-3xl">Join Room Invite</h1>
-      <p className="subtle mt-2">Invite code: {normalizedCode}</p>
+    <div className={`panel ${motionClassNames.sectionEntry}`}>
+      <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>Join Room Invite</h1>
+      <p className={`subtle mt-2 ${motionClassNames.fadeIn}`} style={getStaggerStyle(1)}>
+        Invite code: {normalizedCode}
+      </p>
       {inviteQuery.data ? (
-        <div className="card mt-4">
+        <div className={`card mt-4 ${motionClassNames.listItemEntry}`} style={getStaggerStyle(2)}>
           <h2 className="text-lg font-semibold">{inviteQuery.data.room.name}</h2>
           <p className="subtle text-sm">Type: {inviteQuery.data.room.type}</p>
         </div>
@@ -62,7 +65,11 @@ function JoinInvitePage() {
           {inviteQuery.error instanceof Error ? inviteQuery.error.message : 'Invite is invalid.'}
         </p>
       ) : null}
-      <form className="field mt-4" onSubmit={onJoin}>
+      <form
+        className={`field mt-4 ${motionClassNames.sectionEntry}`}
+        style={getStaggerStyle(inviteQuery.data ? 3 : 2)}
+        onSubmit={onJoin}
+      >
         <label className="field">
           Display name
           <input

@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { authApi } from '@/api/auth'
 import { sessionStore } from '@/stores/sessionStore'
+import { motionClassNames } from '@/utils/motion'
 
 export const Route = createFileRoute('/auth/callback')({
   component: AuthCallbackPage,
@@ -46,8 +47,8 @@ function AuthCallbackPage() {
   }, [navigate])
 
   return (
-    <div className="panel">
-      <h1 className="page-title text-3xl">Completing sign-in...</h1>
+    <div className={`panel ${motionClassNames.sectionEntry}`}>
+      <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>Completing sign-in...</h1>
       {error ? <p className="danger-text mt-4">{error}</p> : <p className="subtle mt-4">Please wait.</p>}
     </div>
   )

@@ -4,6 +4,7 @@ import type { FormEvent } from 'react'
 import { roomsApi } from '@/api/rooms'
 import { useSession } from '@/hooks/useSession'
 import { queryClient } from '@/api/queryClient'
+import { getStaggerStyle, motionClassNames } from '@/utils/motion'
 
 export const Route = createFileRoute('/rooms/new')({
   component: CreateRoomPage,
@@ -21,8 +22,8 @@ function CreateRoomPage() {
 
   if (!session.user) {
     return (
-      <div className="panel">
-        <h1 className="page-title text-3xl">Sign in required</h1>
+      <div className={`panel ${motionClassNames.sectionEntry}`}>
+        <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>Sign in required</h1>
         <p className="subtle mt-3">Create room requires an authenticated host account.</p>
       </div>
     )
@@ -55,14 +56,14 @@ function CreateRoomPage() {
   }
 
   return (
-    <div className="panel">
-      <h1 className="page-title text-3xl">Create Room</h1>
-      <form className="mt-4" onSubmit={onSubmit}>
-        <label className="field">
+    <div className={`panel ${motionClassNames.sectionEntry}`}>
+      <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>Create Room</h1>
+      <form className={`mt-4 ${motionClassNames.sectionEntry}`} style={getStaggerStyle(1)} onSubmit={onSubmit}>
+        <label className={`field ${motionClassNames.fadeIn}`} style={getStaggerStyle(2)}>
           Room name
           <input value={name} onChange={(event) => setName(event.target.value)} required minLength={3} maxLength={80} />
         </label>
-        <div className="grid-two">
+        <div className={`grid-two ${motionClassNames.fadeIn}`} style={getStaggerStyle(3)}>
           <label className="field">
             Room type
             <select value={type} onChange={(event) => setType(event.target.value as 'temporary' | 'permanent')}>
@@ -81,7 +82,7 @@ function CreateRoomPage() {
             />
           </label>
         </div>
-        <label className="field">
+        <label className={`field ${motionClassNames.fadeIn}`} style={getStaggerStyle(4)}>
           <span>Allow guest join</span>
           <input
             type="checkbox"
@@ -90,7 +91,7 @@ function CreateRoomPage() {
           />
         </label>
         {error ? <p className="danger-text mt-3">{error}</p> : null}
-        <button className="btn btn-primary mt-4" disabled={saving} type="submit">
+        <button className={`btn btn-primary mt-4 ${motionClassNames.fadeIn}`} style={getStaggerStyle(5)} disabled={saving} type="submit">
           {saving ? 'Creating...' : 'Create room'}
         </button>
       </form>
