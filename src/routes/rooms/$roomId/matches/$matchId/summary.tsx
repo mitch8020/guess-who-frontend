@@ -1,7 +1,8 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+﻿import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { matchesApi } from '@/api/matches'
 import { queryClient } from '@/api/queryClient'
+import { getStaggerStyle, motionClassNames } from '@/utils/motion'
 
 export const Route = createFileRoute('/rooms/$roomId/matches/$matchId/summary')({
   component: MatchSummaryPage,
@@ -28,15 +29,19 @@ function MatchSummaryPage() {
   })
 
   return (
-    <div className="panel">
-      <h1 className="page-title text-3xl">Match Summary</h1>
-      <p className="subtle mt-2">
+    <div className={`panel ${motionClassNames.sectionEntry}`}>
+      <h1 className={`page-title text-3xl ${motionClassNames.fadeIn}`}>Match Summary</h1>
+      <p className={`subtle mt-2 ${motionClassNames.fadeIn}`} style={getStaggerStyle(1)}>
         Status: {matchQuery.data?.match.status} · Winner member: {matchQuery.data?.match.winnerMemberId ?? 'none'}
       </p>
 
       <div className="card-list">
-        {matchQuery.data?.match.participants.map((participant) => (
-          <article key={participant.roomMemberId} className="card">
+        {matchQuery.data?.match.participants.map((participant, index) => (
+          <article
+            key={participant.roomMemberId}
+            className={`card ${motionClassNames.listItemEntry}`}
+            style={getStaggerStyle(index, 35, 260)}
+          >
             <h2 className="font-semibold">{participant.roomMemberId}</h2>
             <p className="subtle text-sm">Result: {participant.result}</p>
             <p className="subtle text-xs">
@@ -46,7 +51,7 @@ function MatchSummaryPage() {
         ))}
       </div>
 
-      <div className="mt-4 flex gap-2">
+      <div className={`mt-4 flex gap-2 ${motionClassNames.fadeIn}`} style={getStaggerStyle(2)}>
         <button className="btn btn-primary" type="button" onClick={() => rematchMutation.mutate()}>
           Start Rematch
         </button>
