@@ -1,9 +1,9 @@
-import { apiRequest } from '@/api/client'
 import type { User } from '@/types/domain'
+import { apiRequest } from '@/api/client'
 
 export const authApi = {
   getGoogleStartUrl: () => {
-    const base = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001/api'
+    const base = import.meta.env.VITE_API_BASE_URL
     const redirectTo = `${window.location.origin}/auth/callback`
     return `${base}/auth/google?redirectTo=${encodeURIComponent(redirectTo)}`
   },
