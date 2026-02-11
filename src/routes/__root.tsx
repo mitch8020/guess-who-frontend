@@ -1,12 +1,23 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { Outlet, createRootRoute, useRouterState } from '@tanstack/react-router'
 
 import Header from '../components/Header'
+import PageTransition from '../components/PageTransition'
 
-export const Route = createRootRoute({
-  component: () => (
+function RootLayout() {
+  const routeKey = useRouterState({
+    select: (state) => state.location.pathname,
+  })
+
+  return (
     <div className="app-shell">
       <Header />
-      <Outlet />
+      <PageTransition routeKey={routeKey}>
+        <Outlet />
+      </PageTransition>
     </div>
-  ),
+  )
+}
+
+export const Route = createRootRoute({
+  component: RootLayout,
 })
