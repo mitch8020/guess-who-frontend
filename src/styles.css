@@ -10,6 +10,12 @@
   --accent-alt: #7ce2d6;
   --danger: #ff5f5f;
   --ring: rgba(124, 226, 214, 0.45);
+  --motion-duration-fast: 140ms;
+  --motion-duration-medium: 220ms;
+  --motion-duration-entry: 280ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-ease-entry: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-distance-subtle: 8px;
 }
 
 body {
@@ -45,6 +51,11 @@ a {
     rgba(15, 45, 56, 0.86) 45%,
     rgba(34, 62, 58, 0.75) 100%
   );
+  transition:
+    opacity var(--motion-duration-medium) var(--motion-ease-standard),
+    transform var(--motion-duration-medium) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-medium) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .brand {
@@ -62,8 +73,14 @@ a {
 }
 
 .header-link {
-  @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium transition-colors;
+  @apply inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium;
   color: var(--text-muted);
+  transition:
+    opacity var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .header-link:hover {
@@ -88,6 +105,11 @@ a {
 .panel {
   @apply mt-5 rounded-2xl border border-white/10 p-5 shadow-xl md:p-7;
   background: var(--bg-panel);
+  transition:
+    opacity var(--motion-duration-medium) var(--motion-ease-standard),
+    transform var(--motion-duration-medium) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-medium) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .grid-two {
@@ -101,10 +123,17 @@ a {
 .field input,
 .field select,
 .field textarea {
-  @apply rounded-xl border px-3 py-2 text-sm outline-none transition-shadow;
+  @apply rounded-xl border px-3 py-2 text-sm outline-none;
   border-color: rgba(255, 255, 255, 0.2);
   background: rgba(6, 21, 25, 0.75);
   color: var(--text-main);
+  transition:
+    opacity var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .field input:focus,
@@ -114,9 +143,15 @@ a {
 }
 
 .btn {
-  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-transform;
+  @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold;
   border: 0;
   cursor: pointer;
+  transition:
+    opacity var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .btn:disabled {
@@ -156,8 +191,82 @@ a {
 .card {
   @apply rounded-xl border border-white/10 p-4;
   background: rgba(12, 31, 38, 0.76);
+  transition:
+    opacity var(--motion-duration-medium) var(--motion-ease-standard),
+    transform var(--motion-duration-medium) var(--motion-ease-standard),
+    box-shadow var(--motion-duration-medium) var(--motion-ease-standard),
+    border-color var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .danger-text {
   color: var(--danger);
+}
+
+@keyframes motion-fade-up-soft {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--motion-distance-subtle), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes motion-fade-in-soft {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-pop-in-soft {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 2px, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.motion-page-entry {
+  animation: motion-fade-up-soft var(--motion-duration-entry) var(--motion-ease-entry) both;
+}
+
+.motion-section-entry {
+  animation:
+    motion-fade-up-soft var(--motion-duration-entry) var(--motion-ease-entry) both,
+    motion-fade-in-soft var(--motion-duration-medium) var(--motion-ease-standard) both;
+}
+
+.motion-list-item-entry {
+  animation: motion-pop-in-soft var(--motion-duration-medium) var(--motion-ease-entry) both;
+  animation-delay: var(--motion-delay, 0ms);
+}
+
+.motion-fade-in {
+  animation: motion-fade-in-soft var(--motion-duration-medium) var(--motion-ease-standard) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-duration-fast: 1ms;
+    --motion-duration-medium: 1ms;
+    --motion-duration-entry: 1ms;
+    --motion-distance-subtle: 0px;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
 }
