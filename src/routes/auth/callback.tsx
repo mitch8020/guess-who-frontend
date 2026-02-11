@@ -14,28 +14,27 @@ function AuthCallbackPage() {
 
   useEffect(() => {
     const completeAuth = async () => {
-      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''))
-      const hashAccessToken = hashParams.get('accessToken')
-      const hashRefreshToken = hashParams.get('refreshToken')
-      if (hashAccessToken && hashRefreshToken) {
-        sessionStore.setState({
-          ...sessionStore.getState(),
-          accessToken: hashAccessToken,
-          refreshToken: hashRefreshToken,
-          user: null,
-        })
-        const me = await authApi.me()
-        sessionStore.setUser(me.user)
-        await navigate({ to: '/rooms' })
-        return
-      }
-
-      const params = new URLSearchParams(window.location.search)
       try {
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+        const hashAccessToken = hashParams.get('accessToken')
+        if (hashAccessToken) {
+          sessionStore.setState({
+            ...sessionStore.getState(),
+            accessToken: hashAccessToken,
+            user: null,
+          })
+          const me = await authApi.me()
+          sessionStore.setUser(me.user)
+          await navigate({ to: '/rooms' })
+          return
+        }
+
+        const params = new URLSearchParams(window.location.search)
         const session = await authApi.finalizeGoogleCallback(params)
         sessionStore.setSession(session)
         await navigate({ to: '/rooms' })
       } catch (caughtError) {
+        sessionStore.clearUserSession()
         const message =
           caughtError instanceof Error
             ? caughtError.message

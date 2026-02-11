@@ -1,31 +1,31 @@
-import { apiRequest } from '@/api/client'
 import type { Room, RoomMember } from '@/types/domain'
+import { apiRequest } from '@/api/client'
 
 export interface CreateRoomPayload {
   name: string
   type: 'temporary' | 'permanent'
   settings?: {
-    allowedBoardSizes?: number[]
+    allowedBoardSizes?: Array<number>
     maxPlayers?: number
     allowGuestJoin?: boolean
     defaultBoardSize?: number
-    rematchBoardSizes?: number[]
+    rematchBoardSizes?: Array<number>
   }
 }
 
 export interface UpdateRoomPayload {
   name?: string
   settings?: {
-    allowedBoardSizes?: number[]
+    allowedBoardSizes?: Array<number>
     maxPlayers?: number
     allowGuestJoin?: boolean
     defaultBoardSize?: number
-    rematchBoardSizes?: number[]
+    rematchBoardSizes?: Array<number>
   }
 }
 
 export const roomsApi = {
-  list: () => apiRequest<{ rooms: Room[] }>('/rooms', { auth: 'user' }),
+  list: () => apiRequest<{ rooms: Array<Room> }>('/rooms', { auth: 'user' }),
   create: (payload: CreateRoomPayload) =>
     apiRequest<{
       room: Room
@@ -39,7 +39,7 @@ export const roomsApi = {
     apiRequest<{
       room: Room
       member: RoomMember
-      members: RoomMember[]
+      members: Array<RoomMember>
     }>(`/rooms/${roomId}`, {
       auth: 'player',
       roomId,
@@ -56,7 +56,7 @@ export const roomsApi = {
       auth: 'user',
     }),
   removeMember: (roomId: string, memberId: string) =>
-    apiRequest<{ members: RoomMember[] }>(`/rooms/${roomId}/members/remove`, {
+    apiRequest<{ members: Array<RoomMember> }>(`/rooms/${roomId}/members/remove`, {
       method: 'POST',
       body: JSON.stringify({ memberId }),
       auth: 'user',

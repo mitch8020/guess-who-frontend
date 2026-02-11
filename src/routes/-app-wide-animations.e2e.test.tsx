@@ -38,7 +38,6 @@ afterEach(() => {
   window.localStorage.clear()
   sessionStore.setState({
     accessToken: null,
-    refreshToken: null,
     user: null,
     guestTokensByRoomId: {},
   })

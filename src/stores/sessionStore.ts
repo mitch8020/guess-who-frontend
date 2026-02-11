@@ -2,7 +2,6 @@ import type { User } from '@/types/domain'
 
 export interface SessionState {
   accessToken: string | null
-  refreshToken: string | null
   user: User | null
   guestTokensByRoomId: Record<string, string>
 }
@@ -11,7 +10,6 @@ const STORAGE_KEY = 'guess-who-session-v1'
 
 const defaultState: SessionState = {
   accessToken: null,
-  refreshToken: null,
   user: null,
   guestTokensByRoomId: {},
 }
@@ -28,7 +26,7 @@ const readInitialState = (): SessionState => {
     if (!raw) {
       return defaultState
     }
-    const parsed = JSON.parse(raw) as SessionState
+    const parsed = JSON.parse(raw) as Partial<SessionState>
     return {
       ...defaultState,
       ...parsed,
@@ -67,13 +65,11 @@ export const sessionStore = {
   },
   setSession: (payload: {
     accessToken: string
-    refreshToken: string
     user: User
   }) => {
     state = {
       ...state,
       accessToken: payload.accessToken,
-      refreshToken: payload.refreshToken,
       user: payload.user,
     }
     persist()
@@ -83,7 +79,6 @@ export const sessionStore = {
     state = {
       ...state,
       accessToken: null,
-      refreshToken: null,
       user: null,
     }
     persist()

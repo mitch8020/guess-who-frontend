@@ -1,8 +1,8 @@
-import { apiRequest } from '@/api/client'
 import type { ChatMessage } from '@/types/domain'
+import { apiRequest } from '@/api/client'
 
 export interface ChatMessageListResponse {
-  items: ChatMessage[]
+  items: Array<ChatMessage>
   nextCursor: string | null
 }
 

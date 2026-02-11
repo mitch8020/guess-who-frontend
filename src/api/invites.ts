@@ -1,5 +1,5 @@
-import { apiRequest } from '@/api/client'
 import type { Invite, Room, RoomMember } from '@/types/domain'
+import { apiRequest } from '@/api/client'
 
 export const invitesApi = {
   create: (roomId: string, payload?: { allowGuestJoin?: boolean; maxUses?: number }) =>
@@ -19,7 +19,7 @@ export const invitesApi = {
     }>(`/invites/${code}`, {
       auth: 'none',
     }),
-  join: (code: string, payload: { displayName: string; authToken?: string }) =>
+  join: (code: string, payload: { displayName: string }, asAuthenticatedUser: boolean) =>
     apiRequest<{
       member: RoomMember
       guestToken?: string
@@ -27,7 +27,7 @@ export const invitesApi = {
     }>(`/invites/${code}/join`, {
       method: 'POST',
       body: JSON.stringify(payload),
-      auth: 'none',
+      auth: asAuthenticatedUser ? 'user' : 'none',
     }),
   revoke: (roomId: string, inviteId: string) =>
     apiRequest<{ invite: Invite }>(`/rooms/${roomId}/invites/${inviteId}/revoke`, {

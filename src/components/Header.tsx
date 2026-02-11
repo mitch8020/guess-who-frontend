@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { LogOut, House, PlusSquare, UsersRound } from 'lucide-react'
+import { House, LogOut, PlusSquare, UsersRound } from 'lucide-react'
 import { useEffect } from 'react'
 import { authApi } from '@/api/auth'
 import { sessionStore } from '@/stores/sessionStore'

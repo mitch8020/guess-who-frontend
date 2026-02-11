@@ -5,7 +5,6 @@ describe('sessionStore', () => {
   it('prioritizes user token over guest token', () => {
     sessionStore.setState({
       accessToken: 'user-token',
-      refreshToken: 'refresh-token',
       user: null,
       guestTokensByRoomId: { room1: 'guest-token' },
     })
@@ -16,7 +15,6 @@ describe('sessionStore', () => {
   it('returns room guest token when user session is absent', () => {
     sessionStore.setState({
       accessToken: null,
-      refreshToken: null,
       user: null,
       guestTokensByRoomId: { room2: 'guest-room-token' },
     })

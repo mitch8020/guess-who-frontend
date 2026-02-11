@@ -1,4 +1,3 @@
-import { apiRequest } from '@/api/client'
 import type {
   Match,
   MatchAction,
@@ -6,21 +5,22 @@ import type {
   MatchParticipantView,
   MatchReplayFrame,
 } from '@/types/domain'
+import { apiRequest } from '@/api/client'
 
 export interface MatchDetailResponse {
   match: Match
   participantState: MatchParticipantView | null
-  actions: MatchAction[]
+  actions: Array<MatchAction>
 }
 
 export interface MatchHistoryResponse {
-  items: MatchHistoryItem[]
+  items: Array<MatchHistoryItem>
   nextCursor: string | null
 }
 
 export interface MatchReplayResponse {
   matchId: string
-  frames: MatchReplayFrame[]
+  frames: Array<MatchReplayFrame>
 }
 
 export const matchesApi = {

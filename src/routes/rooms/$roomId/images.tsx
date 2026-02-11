@@ -1,7 +1,7 @@
 ﻿import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import type { ChangeEvent } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import type { ChangeEvent } from 'react'
 import { imagesApi } from '@/api/images'
 import { queryClient } from '@/api/queryClient'
 import { useRealtimeRoom } from '@/hooks/useRealtime'
@@ -14,7 +14,7 @@ export const Route = createFileRoute('/rooms/$roomId/images')({
 function RoomImagesPage() {
   const { roomId } = Route.useParams()
   const [error, setError] = useState<string | null>(null)
-  const [selected, setSelected] = useState<string[]>([])
+  const [selected, setSelected] = useState<Array<string>>([])
   useRealtimeRoom(roomId)
 
   const imagesQuery = useQuery({

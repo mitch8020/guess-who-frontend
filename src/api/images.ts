@@ -1,10 +1,10 @@
-import { apiRequest } from '@/api/client'
 import type { RoomImage } from '@/types/domain'
+import { apiRequest } from '@/api/client'
 
 export const imagesApi = {
   list: (roomId: string) =>
     apiRequest<{
-      images: RoomImage[]
+      images: Array<RoomImage>
       activeCount: number
       minRequiredToStart: number
     }>(`/rooms/${roomId}/images`, {
@@ -27,8 +27,8 @@ export const imagesApi = {
       auth: 'player',
       roomId,
     }),
-  bulkRemove: (roomId: string, imageIds: string[]) =>
-    apiRequest<{ removedImageIds: string[] }>(`/rooms/${roomId}/images/bulk-remove`, {
+  bulkRemove: (roomId: string, imageIds: Array<string>) =>
+    apiRequest<{ removedImageIds: Array<string> }>(`/rooms/${roomId}/images/bulk-remove`, {
       method: 'POST',
       body: JSON.stringify({ imageIds }),
       auth: 'player',

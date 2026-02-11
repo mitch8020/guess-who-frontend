@@ -1,7 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate  } from '@tanstack/react-router'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate } from '@tanstack/react-router'
 import { authApi } from '@/api/auth'
 import { useSession } from '@/hooks/useSession'
 import { getStaggerStyle, motionClassNames } from '@/utils/motion'

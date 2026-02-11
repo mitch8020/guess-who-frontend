@@ -1,6 +1,6 @@
-import { sessionStore } from '@/stores/sessionStore'
 import type { ApiError } from '@/types/api'
 import type { User } from '@/types/domain'
+import { sessionStore } from '@/stores/sessionStore'
 import { rollbar } from '@/utils/rollbar'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3001/api'
@@ -48,17 +48,8 @@ const buildAuthorizationHeader = (auth: RequestOptions['auth'], roomId?: string)
 }
 
 const refreshSession = async (): Promise<boolean> => {
-  const refreshToken = sessionStore.getState().refreshToken
-  if (!refreshToken) {
-    return false
-  }
   const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-      authorization: `Bearer ${refreshToken}`,
-    },
-    body: JSON.stringify({ refreshToken }),
     credentials: 'include',
   })
   if (!response.ok) {
@@ -67,7 +58,6 @@ const refreshSession = async (): Promise<boolean> => {
   }
   const payload = await parseResponse<{
     accessToken: string
-    refreshToken: string
     user: User
   }>(response)
   sessionStore.setSession(payload)

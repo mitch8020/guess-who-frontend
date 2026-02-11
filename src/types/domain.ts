@@ -12,12 +12,12 @@ export interface User {
 }
 
 export interface RoomSettings {
-  allowedBoardSizes: number[]
+  allowedBoardSizes: Array<number>
   minPlayers: number
   maxPlayers: number
   allowGuestJoin: boolean
   defaultBoardSize?: number
-  rematchBoardSizes?: number[]
+  rematchBoardSizes?: Array<number>
 }
 
 export interface Room {
@@ -75,9 +75,9 @@ export interface RoomImage {
 
 export interface MatchParticipantView {
   roomMemberId: string
-  boardImageOrder: string[]
+  boardImageOrder: Array<string>
   secretTargetImageId: string
-  eliminatedImageIds: string[]
+  eliminatedImageIds: Array<string>
   result: 'in_progress' | 'guessed_correct' | 'guessed_wrong' | 'timeout'
 }
 
@@ -86,7 +86,7 @@ export interface Match {
   roomId: string
   status: MatchStatus
   boardSize: number
-  selectedImageIds: string[]
+  selectedImageIds: Array<string>
   startedByMemberId: string
   turnMemberId?: string
   winnerMemberId?: string
@@ -97,7 +97,7 @@ export interface Match {
   updatedAt: string
   participants: Array<{
     roomMemberId: string
-    eliminatedImageIds: string[]
+    eliminatedImageIds: Array<string>
     result: 'in_progress' | 'guessed_correct' | 'guessed_wrong' | 'timeout'
     readyAt: string
     lastActionAt: string

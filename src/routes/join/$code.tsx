@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
-import type { FormEvent } from 'react'
 import { useQuery } from '@tanstack/react-query'
+import type { FormEvent } from 'react'
 import { invitesApi } from '@/api/invites'
 import { sessionStore } from '@/stores/sessionStore'
 import { useSession } from '@/hooks/useSession'
@@ -32,8 +32,7 @@ function JoinInvitePage() {
     try {
       const result = await invitesApi.join(normalizedCode, {
         displayName,
-        authToken: session.accessToken ?? undefined,
-      })
+      }, Boolean(session.accessToken))
       if (result.guestToken) {
         sessionStore.setGuestToken(result.room._id, result.guestToken)
       }

@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+﻿import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { matchesApi } from '@/api/matches'
 import { queryClient } from '@/api/queryClient'
